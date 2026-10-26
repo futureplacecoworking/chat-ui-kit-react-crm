@@ -212,3 +212,27 @@ button, select, h3 { font-family: "Nunito", system-ui, sans-serif; }
 .aviso-resumo { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--chumbo); align-items: center; }
 .aviso-resumo .novo { background: var(--azul); color: #fff; font-weight: 800; border-radius: 999px; padding: 2px 8px; font-family: "Nunito", sans-serif; }
 .mural-topo-acoes { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* Aviso direcionado a uma pessoa */
+:root { --faixa-pessoal: #f3ebfb; --pessoal: #7a3e9d; }
+@media (prefers-color-scheme: dark) { :root { --faixa-pessoal: #2b2140; --pessoal: #c9a3e8; } }
+.tag-pessoal { background: var(--pessoal); color: #fff; font-weight: 800; font-size: 11px; font-family: "Nunito", sans-serif; border-radius: 999px; padding: 3px 9px; white-space: nowrap; }
+@media (prefers-color-scheme: dark) { .tag-pessoal { color: #1b1230; } }
+.mural-pessoal { background: var(--faixa-pessoal); border: 2px solid var(--pessoal); border-radius: var(--r-c); padding: 14px; margin-bottom: 22px; }
+.mural-pessoal .mural-subtitulo { color: var(--pessoal); font-size: 17px; }
+.mural-pessoal .contagem { background: var(--pessoal); color: #fff; }
+@media (prefers-color-scheme: dark) { .mural-pessoal .contagem { color: #1b1230; } }
+
+/* Agentes */
+.tag-agente { display: inline-block; margin-left: 6px; background: var(--suave); border: 1px solid var(--linha); border-radius: 999px; padding: 1px 8px; font-size: 11px; font-weight: 800; font-family: "Nunito", sans-serif; }
+.aviso-autor img.agente { border-radius: 6px; }
+.mural-agentes { margin-top: 22px; background: var(--cartao); border-radius: var(--r-c); box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1); }
+.mural-agentes summary { cursor: pointer; padding: 12px 14px; font-weight: 800; font-family: "Nunito", sans-serif; color: var(--azul); }
+@media (prefers-color-scheme: dark) { .mural-agentes summary { color: #7fb4e8; } }
+.mural-agentes summary:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; border-radius: var(--r-c); }
+.agentes-corpo { padding: 0 14px 14px; display: grid; gap: 8px; font-size: 14px; line-height: 1.45; }
+.agentes-corpo p, .agentes-corpo ul { margin: 0; }
+.agentes-corpo ul { padding-left: 20px; display: grid; gap: 4px; }
+.agentes-corpo pre { margin: 0; background: var(--suave); border-radius: var(--r-p); padding: 10px 12px; overflow-x: auto; font-size: 12.5px; }
+.agentes-corpo .nota { color: var(--chumbo); font-size: 13px; }
+.mural-form select { max-width: 100%; }

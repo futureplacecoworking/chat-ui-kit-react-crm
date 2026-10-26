@@ -14,7 +14,7 @@ import {
   MessageInput,
   InputToolbox,
 } from "@kit";
-import { AVISOS_INICIAIS, CANAIS, CARTOES, MENSAGENS_INICIAIS, PESSOAS, VER_COMO } from "./dados.js";
+import { AVISOS_INICIAIS, CANAIS, CARTOES, MENSAGENS_INICIAIS, PESSOAS, VER_COMO, visivel } from "./dados.js";
 import Mural from "./Mural.jsx";
 import { avatarDe } from "./avatar.js";
 
@@ -71,7 +71,7 @@ export default function App() {
   const doCanal = mensagens.filter((m) => m.canal === canal.id);
   const pendencias = doCanal.filter((m) => m.pedeConfirmacao && m.confirmadoPor.length === 0);
   const totalNaoLidas = meusCanais.reduce((s, c) => s + naoLidas(c.id), 0);
-  const avisosNovos = avisos.filter((a) => !a.arquivado && !a.vistoPor.includes(euId)).length;
+  const avisosNovos = avisos.filter((a) => visivel(a, euId) && !a.arquivado && !a.vistoPor.includes(euId)).length;
 
   const canaisFiltrados = useMemo(
     () => meusCanais.filter((c) => c.nome.toLowerCase().includes(busca.trim().toLowerCase())),
@@ -139,7 +139,7 @@ export default function App() {
       </header>
 
       <div className="aviso-proto">
-        Protótipo com dados inventados. O Mural é para todos verem; as Conversas são por canal. Use “Ver como” para trocar de lado. Nada é salvo.
+        Protótipo com dados inventados. O Mural é para todos verem (ou só uma pessoa, se o aviso for direcionado); as Conversas são por canal. Use “Ver como” para trocar de lado. Nada é salvo.
       </div>
 
       <div className="palco">

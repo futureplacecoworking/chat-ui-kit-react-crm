@@ -87,10 +87,26 @@ export const TIPOS_AVISO = {
 };
 
 export const AVISOS_INICIAIS = [
-  { id: 101, autor: "luiz", hora: "26/10 08:00", tipo: "aviso", fixado: true, titulo: "Reunião geral da equipe", texto: "Sexta-feira, às 16h, na sala Milão. Recepção, limpeza, administrativo e gestão. Quem não puder, avise no canal Recepção e gestão.", vistoPor: ["luiz", "fernanda", "recepcao"], arquivado: false, relacionados: [] },
-  { id: 102, autor: "fernanda", hora: "26/10 08:45", tipo: "importante", fixado: false, titulo: "Eletricista amanhã cedo", texto: "Ele vem trocar as lâmpadas do corredor da Milão. Avisem os clientes que usam a sala para chegar com calma.", vistoPor: ["fernanda"], arquivado: false, relacionados: [106] },
+  { id: 101, autor: "luiz", hora: "26/10 08:00", tipo: "aviso", fixado: true, titulo: "Reunião geral da equipe", texto: "Sexta-feira, às 16h, na sala Milão. Recepção, limpeza, administrativo e gestão. Quem não puder, avise no canal Recepção e gestão.", vistoPor: ["luiz", "fernanda", "recepcao"], arquivado: false, relacionados: [107] },
+  { id: 102, autor: "fernanda", hora: "26/10 08:45", tipo: "importante", fixado: false, titulo: "Eletricista amanhã cedo", texto: "Ele vem trocar as lâmpadas do corredor da Milão. Avisem os clientes que usam a sala para chegar com calma.", vistoPor: ["fernanda"], arquivado: false, relacionados: [106, 110] },
   { id: 103, autor: "recepcao", hora: "26/10 08:20", tipo: "lembrete", fixado: false, titulo: "Encomenda da Studio Aurora", texto: "Está no armário da recepção. Quem atender o cliente entrega e anota no canal.", vistoPor: ["recepcao", "luiz"], arquivado: false, relacionados: [] },
-  { id: 104, autor: "luciene", hora: "26/10 07:30", tipo: "info", fixado: false, titulo: "Detergente da copa acabou", texto: "Já está na lista de compras. Até chegar, usem o da limpeza (armário de baixo).", vistoPor: ["luciene", "recepcao", "luiz", "isabela"], arquivado: false, relacionados: [] },
+  { id: 104, autor: "luciene", hora: "26/10 07:30", tipo: "info", fixado: false, titulo: "Detergente da copa acabou", texto: "Já está na lista de compras. Até chegar, usem o da limpeza (armário de baixo).", vistoPor: ["luciene", "recepcao", "luiz", "isabela"], arquivado: false, relacionados: [108] },
   { id: 105, autor: "isabela", hora: "23/10 17:10", tipo: "info", fixado: false, titulo: "Conferência de faturas de outubro", texto: "Concluída. Esse aviso já foi resolvido e está arquivado.", vistoPor: ["isabela", "luiz", "fernanda"], arquivado: true, relacionados: [] },
-  { id: 106, autor: "recepcao", hora: "26/10 09:10", tipo: "lembrete", fixado: false, titulo: "Sala Milão: Studio Aurora às 14h", texto: "A reunião é na Milão, no mesmo corredor onde o eletricista vai trabalhar amanhã. Deixar a luz de apoio ligada.", vistoPor: ["recepcao"], arquivado: false, relacionados: [102] },
+  { id: 106, autor: "recepcao", hora: "26/10 09:10", tipo: "lembrete", fixado: false, titulo: "Sala Milão: Studio Aurora às 14h", texto: "A reunião é na Milão, no mesmo corredor onde o eletricista vai trabalhar amanhã. Deixar a luz de apoio ligada.", vistoPor: ["recepcao"], arquivado: false, relacionados: [102, 107] },
+  { id: 107, autor: "maya", hora: "26/10 07:55", tipo: "lembrete", fixado: false, titulo: "Resumo do dia da Maya", texto: "Hoje: Studio Aurora na sala Milão às 14h, eletricista amanhã cedo e reunião geral na sexta às 16h. Nenhuma cobrança vence hoje.", vistoPor: ["recepcao"], arquivado: false, relacionados: [101, 106] },
+  { id: 108, autor: "maya", hora: "26/10 09:30", tipo: "info", fixado: false, titulo: "O detergente chega na quinta", texto: "O fornecedor confirmou a entrega para quinta-feira de manhã.", para: "luciene", vistoPor: [], arquivado: false, relacionados: [104] },
+  { id: 109, autor: "debora", hora: "26/10 09:40", tipo: "importante", fixado: false, titulo: "Folha de ponto até sexta", texto: "Isabela, falta conferir a folha de ponto de outubro. Preciso dela até sexta.", para: "isabela", vistoPor: [], arquivado: false, relacionados: [] },
+  { id: 110, autor: "luiz", hora: "26/10 09:50", tipo: "importante", fixado: false, titulo: "Se o eletricista não aparecer", texto: "Recepção, se ele não chegar até as 9h de amanhã, me liga antes de abrir a Milão.", para: "recepcao", vistoPor: ["luiz"], arquivado: false, relacionados: [102] },
 ];
+
+// Agentes de IA (Hermes e Claude) que também publicam no mural. Dados inventados.
+export const AGENTES = {
+  maya: { id: "maya", nome: "Maya", papel: "Secretária", cor: "#c2185b", agente: true },
+  debora: { id: "debora", nome: "Débora", papel: "RH e DP", cor: "#00838f", agente: true },
+  luisa: { id: "luisa", nome: "Luísa", papel: "Financeiro", cor: "#6a4fb3", agente: true },
+};
+
+export const quem = (id) => PESSOAS[id] || AGENTES[id];
+
+// Aviso aberto: todos veem. Aviso direcionado: só quem recebeu e quem escreveu.
+export const visivel = (aviso, euId) => !aviso.para || aviso.para === euId || aviso.autor === euId;

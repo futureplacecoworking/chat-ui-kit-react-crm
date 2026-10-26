@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { PESSOAS, TIPOS_AVISO } from "./dados.js";
+import { AGENTES, PESSOAS, TIPOS_AVISO, quem, visivel } from "./dados.js";
 import { avatarDe } from "./avatar.js";
 
 const TODOS = Object.keys(PESSOAS);
 
 function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAlternar, onVi, onFixar, onArquivar, onRestaurar, onRelacionar, onDesrelacionar, onIr }) {
   const [escolhendo, setEscolhendo] = useState(false);
-  const autor = PESSOAS[aviso.autor];
+  const autor = quem(aviso.autor);
+  const destinatario = aviso.para ? PESSOAS[aviso.para] : null;
   const tipo = TIPOS_AVISO[aviso.tipo];
   const faltam = TODOS.filter((p) => !aviso.vistoPor.includes(p));
   const jaVi = aviso.vistoPor.includes(euId);
-  const podeMexer = souAdmin || aviso.autor === euId;
+  const podeMexer = souAdmin || aviso.autor === euId || aviso.para === euId;
   const relacionados = aviso.relacionados.map((id) => avisos.find((x) => x.id === id)).filter(Boolean);
   const candidatos = avisos.filter((x) => !x.arquivado && x.id !== aviso.id && !aviso.relacionados.includes(x.id));
   return (
@@ -26,6 +27,9 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAl
         </span>
         <span className="aviso-topo-dir">
           {aviso.fixado && <span className="aviso-fixo">📌 Fixado</span>}
+          {destinatario && (
+            <span className="tag-pessoal">✉ {destinatario.id === euId ? "Só para você" : `Só para ${destinatario.nome}`}</span>
+          )}
           <button
             type="button"
             className={`seta ${minimizado ? "recolhido" : ""}`}
@@ -45,9 +49,13 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAl
       {minimizado && (
         <div className="aviso-resumo">
           {!jaVi && !aviso.arquivado && <span className="novo">Novo para você</span>}
-          <span>
-            👁 {aviso.vistoPor.length} de {TODOS.length}
-          </span>
+          {destinatario ? (
+            <span>{aviso.vistoPor.includes(destinatario.id) ? `✔ ${destinatario.nome} viu` : `⏳ ${destinatario.nome} não viu`}</span>
+          ) : (
+            <span>
+              👁 {aviso.vistoPor.length} de {TODOS.length}
+            </span>
+          )}
           {relacionados.length > 0 && <span>🔗 {relacionados.length}</span>}
           <span>
             {autor.nome} · {aviso.hora}
@@ -106,14 +114,21 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAl
       )}
 
       <div className="aviso-autor">
-        <img src={avatarDe(autor.nome, autor.cor)} alt="" width="24" height="24" />
+        <img className={autor.agente ? "agente" : ""} src={avatarDe(autor.nome, autor.cor)} alt="" width="24" height="24" />
         <span>
           {autor.nome === autor.papel ? autor.nome : `${autor.nome} · ${autor.papel}`}
+          {autor.agente && <span className="tag-agente">🤖 Agente</span>}
           <small>{aviso.hora}</small>
         </span>
       </div>
       <div className="aviso-vistos">
-        {faltam.length === 0 ? (
+        {destinatario ? (
+          aviso.vistoPor.includes(destinatario.id) ? (
+            <span className="ok">✔ {destinatario.nome} já viu</span>
+          ) : (
+            <span>⏳ {destinatario.nome} ainda não viu</span>
+          )
+        ) : faltam.length === 0 ? (
           <span className="ok">✔ Todos já viram</span>
         ) : (
           <span>
@@ -123,7 +138,7 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAl
       </div>
       <div className="aviso-acoes">
         {aviso.arquivado ? (
-          souAdmin && (
+          podeMexer && (
             <button type="button" className="chip" onClick={() => onRestaurar(aviso.id)}>
               Restaurar
             </button>
@@ -135,7 +150,7 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAl
                 Li o aviso
               </button>
             )}
-            {souAdmin && (
+            {souAdmin && !destinatario && (
               <button type="button" className={`chip ${aviso.fixado ? "" : "chip-fixar"}`} onClick={() => onFixar(aviso.id)}>
                 {aviso.fixado ? "Desafixar" : "📌 Fixar"}
               </button>
@@ -168,6 +183,8 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
   const [tipo, setTipo] = useState("aviso");
   const [fixar, setFixar] = useState(false);
   const [ligarA, setLigarA] = useState("");
+  const [para, setPara] = useState("");
+  const [como, setComo] = useState("");
   const [destaque, setDestaque] = useState(null);
   const [minimizados, setMinimizados] = useState([]);
 
@@ -179,10 +196,16 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
   }, [destaque]);
 
   const muda = (id, f) => setAvisos((a) => a.map((x) => (x.id === id ? f(x) : x)));
-  const ativos = avisos.filter((a) => !a.arquivado);
-  const fixados = ativos.filter((a) => a.fixado);
-  const outros = ativos.filter((a) => !a.fixado);
-  const arquivados = avisos.filter((a) => a.arquivado);
+  // Cada pessoa só enxerga o que é aberto, o que escreveu e o que foi direcionado a ela.
+  const meus = avisos.filter((a) => visivel(a, euId));
+  const ativos = meus.filter((a) => !a.arquivado);
+  const paraMim = ativos.filter((a) => a.para === euId);
+  const fixados = ativos.filter((a) => a.fixado && !a.para);
+  const outros = ativos.filter((a) => !a.fixado && a.para !== euId);
+  const arquivados = meus.filter((a) => a.arquivado);
+  const autorEscolhido = souAdmin && como ? como : euId;
+  const autorEhAgente = Boolean(AGENTES[autorEscolhido]);
+  const destinos = Object.values(PESSOAS).filter((p) => p.id !== autorEscolhido);
 
   // A ligação vale nos dois sentidos: quem abre qualquer um dos dois avisos vê o outro.
   const relacionar = (a, b) =>
@@ -203,7 +226,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
   const alternar = (id) => setMinimizados((m) => (m.includes(id) ? m.filter((i) => i !== id) : [...m, id]));
 
   function ir(id) {
-    const alvo = avisos.find((x) => x.id === id);
+    const alvo = meus.find((x) => x.id === id);
     if (alvo?.arquivado) setMostrarArquivados(true);
     setMinimizados((m) => m.filter((i) => i !== id)); // abre o aviso de destino
     setDestaque(id);
@@ -218,7 +241,19 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
     const data = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", timeZone: "America/Sao_Paulo" });
     const ligado = ligarA ? Number(ligarA) : null;
     setAvisos((a) => [
-      { id, autor: euId, hora: `${data} ${horaAgora()}`, tipo, fixado: souAdmin && fixar, titulo: titulo.trim(), texto: texto.trim(), vistoPor: [euId], arquivado: false, relacionados: ligado ? [ligado] : [] },
+      {
+        id,
+        autor: autorEscolhido,
+        hora: `${data} ${horaAgora()}`,
+        tipo,
+        fixado: souAdmin && fixar && !para && !autorEhAgente, // agente nunca fixa; aviso direcionado não fixa
+        para: para || null,
+        titulo: titulo.trim(),
+        texto: texto.trim(),
+        vistoPor: autorEhAgente ? [] : [autorEscolhido],
+        arquivado: false,
+        relacionados: ligado ? [ligado] : [],
+      },
       ...a.map((x) => (x.id === ligado ? { ...x, relacionados: [...x.relacionados, id] } : x)),
     ]);
     setTitulo("");
@@ -226,11 +261,13 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
     setTipo("aviso");
     setFixar(false);
     setLigarA("");
+    setPara("");
+    setComo("");
     setEscrevendo(false);
   }
 
   const acoes = {
-    avisos,
+    avisos: meus,
     euId,
     souAdmin,
     onAlternar: alternar,
@@ -248,7 +285,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
       <div className="mural-topo">
         <div>
           <h2>Mural de recados</h2>
-          <p>Avisos para toda a equipe. Todo mundo vê, e dá para saber quem já leu.</p>
+          <p>Avisos para toda a equipe, ou só para uma pessoa. Os agentes também publicam aqui, e dá para saber quem já leu.</p>
         </div>
         <div className="mural-topo-acoes">
           <button type="button" className="chip" onClick={() => setMinimizados(minimizados.length >= ativos.length ? [] : ativos.map((a) => a.id))}>
@@ -277,6 +314,35 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
                 </label>
               ))}
             </div>
+            <label htmlFor="aviso-para">Para quem</label>
+            <select id="aviso-para" value={para} onChange={(e) => setPara(e.target.value)}>
+              <option value="">Todos (aparece no mural para todos)</option>
+              {destinos.map((p) => (
+                <option key={p.id} value={p.id}>
+                  Só para {p.nome}
+                </option>
+              ))}
+            </select>
+            {souAdmin && (
+              <>
+                <label htmlFor="aviso-como">Publicar como</label>
+                <select
+                  id="aviso-como"
+                  value={como || euId}
+                  onChange={(e) => {
+                    setComo(e.target.value);
+                    if (para === e.target.value) setPara("");
+                  }}
+                >
+                  <option value={euId}>Eu ({eu.nome})</option>
+                  {Object.values(AGENTES).map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.nome} · {g.papel} (teste de agente)
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
             <label htmlFor="aviso-ligar">Relacionar a</label>
             <select id="aviso-ligar" value={ligarA} onChange={(e) => setLigarA(e.target.value)}>
               <option value="">Nenhum aviso</option>
@@ -286,7 +352,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
                 </option>
               ))}
             </select>
-            {souAdmin && (
+            {souAdmin && !para && !autorEhAgente && (
               <label className="marcar" htmlFor="aviso-fixar">
                 <input id="aviso-fixar" type="checkbox" checked={fixar} onChange={(e) => setFixar(e.target.checked)} /> Fixar no topo
               </label>
@@ -296,6 +362,19 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
             </button>
           </div>
         </form>
+      )}
+
+      {paraMim.length > 0 && (
+        <div className="mural-pessoal" aria-label="Avisos só para você">
+          <h3 className="mural-subtitulo">
+            ✉ Só para você <span className="contagem">{paraMim.length}</span>
+          </h3>
+          <div className="mural-grade grande">
+            {paraMim.map((a) => (
+              <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} minimizado={minimizados.includes(a.id)} {...acoes} />
+            ))}
+          </div>
+        </div>
       )}
 
       {fixados.length > 0 && (
@@ -312,7 +391,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
       )}
 
       <div className="mural-outros">
-        {fixados.length > 0 && (
+        {(fixados.length > 0 || paraMim.length > 0) && (
           <h3 className="mural-subtitulo">
             Outros avisos <span className="contagem">{outros.length}</span>
           </h3>
@@ -339,6 +418,42 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
           )}
         </div>
       )}
+
+      <details className="mural-agentes">
+        <summary>🤖 Para os agentes: como publicar no mural</summary>
+        <div className="agentes-corpo">
+          <p>
+            Cada agente (Maya, Débora, Luísa…) publica com o <strong>próprio nome e o selo “Agente”</strong>. Para ver como fica, use “Publicar como” em “Novo aviso” (só o
+            Administrador vê essa opção no protótipo).
+          </p>
+          <ul>
+            <li>
+              <strong>Ler:</strong> os avisos abertos, os escritos por ele e os direcionados a ele.
+            </li>
+            <li>
+              <strong>Criar:</strong> título, texto e tipo; “para” (uma pessoa) e “relacionados” são opcionais. Sem “para”, todos veem.
+            </li>
+            <li>
+              <strong>Editar e arquivar:</strong> só os avisos que ele mesmo escreveu. O agente nunca exclui, e quem restaura é uma pessoa.
+            </li>
+            <li>
+              <strong>Fixar:</strong> só uma pessoa (Administrador).
+            </li>
+            <li>
+              <strong>Aviso direcionado:</strong> só quem recebeu e quem escreveu leem. O Administrador não vê, a menos que seja o destinatário.
+            </li>
+          </ul>
+          <pre>{`{
+  "assunto": "mural",
+  "titulo": "O detergente chega na quinta",
+  "texto": "O fornecedor confirmou a entrega.",
+  "tipo": "info",
+  "para": "luciene",
+  "relacionados": [104]
+}`}</pre>
+          <p className="nota">Proposta para quando isso for para a Central: o assunto “Mural” começa desligado para todos os agentes, até alguém ligar na tela.</p>
+        </div>
+      </details>
     </section>
   );
 }
