@@ -187,3 +187,28 @@ button, select, h3 { font-family: "Nunito", system-ui, sans-serif; }
 .rel-escolha select { border: 1px solid var(--linha); background: var(--cartao); color: var(--texto); border-radius: var(--r-p); padding: 8px; font: inherit; font-size: 13px; width: 100%; }
 .aviso-card.destaque { outline: 3px solid var(--tipo); outline-offset: 2px; }
 .chip.ligado { background: var(--azul); border-color: var(--azul); color: #fff; }
+
+/* Tipo com a cor na frente */
+.bolinha { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--tipo); flex: none; }
+.aviso-tipo { display: inline-flex; align-items: center; gap: 7px; }
+.aviso-topo-dir { display: inline-flex; align-items: center; gap: 8px; }
+.tipo-grupo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; }
+.tipo-rotulo { font-weight: 700; font-size: 13px; font-family: "Nunito", sans-serif; }
+.tipo-opcao { display: inline-flex; align-items: center; gap: 7px; border: 2px solid var(--linha); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 700; background: var(--cartao); position: relative; }
+.tipo-opcao input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.tipo-opcao.sel { border-color: var(--tipo); background: var(--suave); }
+.tipo-opcao:focus-within { outline: 3px solid var(--azul); outline-offset: 2px; }
+
+/* Minimizar o cartão */
+.seta { border: 1px solid var(--linha); background: var(--cartao); color: var(--chumbo); border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+.seta:hover { background: var(--suave); }
+.seta:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+.seta svg { transition: transform 0.15s; }
+.seta.recolhido svg { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) { .seta svg { transition: none; } }
+.aviso-corpo { display: flex; flex-direction: column; gap: 8px; }
+.aviso-corpo[hidden] { display: none; }
+.aviso-card.minimizado { align-self: start; gap: 6px; }
+.aviso-resumo { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--chumbo); align-items: center; }
+.aviso-resumo .novo { background: var(--azul); color: #fff; font-weight: 800; border-radius: 999px; padding: 2px 8px; font-family: "Nunito", sans-serif; }
+.mural-topo-acoes { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }

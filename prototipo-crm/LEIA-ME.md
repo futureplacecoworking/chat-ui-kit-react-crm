@@ -24,6 +24,8 @@ npm run build    # gera dist/index.html (um arquivo só)
 Avisos que **todos veem**, em cartões coloridos por tipo (Importante, Aviso, Lembrete, Informativo).
 - Qualquer pessoa publica um aviso; só o Administrador **fixa**. Os fixados ficam numa **faixa azul própria no topo**, separados dos "Outros avisos".
 - **Relacionar**: quem escreveu o aviso (ou o Administrador) liga um aviso a outro, e a ligação aparece nos dois. Tocar no nome do aviso ligado leva até ele; o × desfaz. Também dá para escolher "Relacionar a" já ao criar o aviso.
+- O **tipo** vem com uma bolinha da cor dele (Importante vermelho, Aviso azul, Lembrete laranja, Informativo cinza), também na hora de escolher o tipo ao criar.
+- **Minimizar**: a seta no canto do cartão recolhe o aviso (fica só o título e um resumo, com "Novo para você" se ainda não leu); "Minimizar todos" e "Expandir todos" no topo.
 - Cada aviso mostra **quem já viu** (e quem falta); o botão "Li o aviso" marca a leitura.
 - **Arquivar** (quem escreveu ou o Administrador) em vez de excluir; "Mostrar arquivados" e "Restaurar" (Administrador).
 - O selo no topo conta os avisos que a pessoa ainda não leu.

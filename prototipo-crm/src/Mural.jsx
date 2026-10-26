@@ -4,7 +4,7 @@ import { avatarDe } from "./avatar.js";
 
 const TODOS = Object.keys(PESSOAS);
 
-function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, onVi, onFixar, onArquivar, onRestaurar, onRelacionar, onDesrelacionar, onIr }) {
+function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, minimizado, onAlternar, onVi, onFixar, onArquivar, onRestaurar, onRelacionar, onDesrelacionar, onIr }) {
   const [escolhendo, setEscolhendo] = useState(false);
   const autor = PESSOAS[aviso.autor];
   const tipo = TIPOS_AVISO[aviso.tipo];
@@ -16,14 +16,45 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, onVi, onFixar, o
   return (
     <article
       id={`aviso-${aviso.id}`}
-      className={`aviso-card ${aviso.fixado ? "fixado" : ""} ${aviso.arquivado ? "arquivado" : ""} ${destaque ? "destaque" : ""}`}
+      className={`aviso-card ${aviso.fixado ? "fixado" : ""} ${aviso.arquivado ? "arquivado" : ""} ${destaque ? "destaque" : ""} ${minimizado ? "minimizado" : ""}`}
       style={{ "--tipo": tipo.cor }}
     >
       <div className="aviso-topo">
-        <span className="aviso-tipo">{tipo.nome}</span>
-        {aviso.fixado && <span className="aviso-fixo">📌 Fixado</span>}
+        <span className="aviso-tipo">
+          <i className="bolinha" aria-hidden="true" />
+          {tipo.nome}
+        </span>
+        <span className="aviso-topo-dir">
+          {aviso.fixado && <span className="aviso-fixo">📌 Fixado</span>}
+          <button
+            type="button"
+            className={`seta ${minimizado ? "recolhido" : ""}`}
+            aria-expanded={!minimizado}
+            aria-controls={`aviso-corpo-${aviso.id}`}
+            aria-label={minimizado ? `Abrir o aviso ${aviso.titulo}` : `Minimizar o aviso ${aviso.titulo}`}
+            title={minimizado ? "Abrir" : "Minimizar"}
+            onClick={() => onAlternar(aviso.id)}
+          >
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+              <path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </span>
       </div>
       <h3>{aviso.titulo}</h3>
+      {minimizado && (
+        <div className="aviso-resumo">
+          {!jaVi && !aviso.arquivado && <span className="novo">Novo para você</span>}
+          <span>
+            👁 {aviso.vistoPor.length} de {TODOS.length}
+          </span>
+          {relacionados.length > 0 && <span>🔗 {relacionados.length}</span>}
+          <span>
+            {autor.nome} · {aviso.hora}
+          </span>
+        </div>
+      )}
+      <div id={`aviso-corpo-${aviso.id}`} className="aviso-corpo" hidden={minimizado}>
       <p>{aviso.texto}</p>
 
       {(relacionados.length > 0 || escolhendo) && (
@@ -122,6 +153,7 @@ function CartaoAviso({ aviso, avisos, euId, souAdmin, destaque, onVi, onFixar, o
           </>
         )}
       </div>
+      </div>
     </article>
   );
 }
@@ -137,6 +169,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
   const [fixar, setFixar] = useState(false);
   const [ligarA, setLigarA] = useState("");
   const [destaque, setDestaque] = useState(null);
+  const [minimizados, setMinimizados] = useState([]);
 
   // O brilho de "você veio parar aqui" some sozinho.
   useEffect(() => {
@@ -167,9 +200,12 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
       lista.map((x) => (x.id === a ? { ...x, relacionados: x.relacionados.filter((i) => i !== b) } : x.id === b ? { ...x, relacionados: x.relacionados.filter((i) => i !== a) } : x))
     );
 
+  const alternar = (id) => setMinimizados((m) => (m.includes(id) ? m.filter((i) => i !== id) : [...m, id]));
+
   function ir(id) {
     const alvo = avisos.find((x) => x.id === id);
     if (alvo?.arquivado) setMostrarArquivados(true);
+    setMinimizados((m) => m.filter((i) => i !== id)); // abre o aviso de destino
     setDestaque(id);
     // espera o aviso arquivado aparecer na tela antes de rolar até ele
     setTimeout(() => document.getElementById(`aviso-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
@@ -197,6 +233,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
     avisos,
     euId,
     souAdmin,
+    onAlternar: alternar,
     onVi: (id) => muda(id, (x) => ({ ...x, vistoPor: [...x.vistoPor, euId] })),
     onFixar: (id) => muda(id, (x) => ({ ...x, fixado: !x.fixado })),
     onArquivar: (id) => muda(id, (x) => ({ ...x, arquivado: true, fixado: false })),
@@ -213,9 +250,14 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
           <h2>Mural de recados</h2>
           <p>Avisos para toda a equipe. Todo mundo vê, e dá para saber quem já leu.</p>
         </div>
-        <button type="button" className="btn-confirma" onClick={() => setEscrevendo(!escrevendo)}>
-          {escrevendo ? "Cancelar" : "+ Novo aviso"}
-        </button>
+        <div className="mural-topo-acoes">
+          <button type="button" className="chip" onClick={() => setMinimizados(minimizados.length >= ativos.length ? [] : ativos.map((a) => a.id))}>
+            {minimizados.length >= ativos.length ? "Expandir todos" : "Minimizar todos"}
+          </button>
+          <button type="button" className="btn-confirma" onClick={() => setEscrevendo(!escrevendo)}>
+            {escrevendo ? "Cancelar" : "+ Novo aviso"}
+          </button>
+        </div>
       </div>
 
       {escrevendo && (
@@ -225,14 +267,16 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
           <label htmlFor="aviso-texto">Texto</label>
           <textarea id="aviso-texto" value={texto} onChange={(e) => setTexto(e.target.value)} rows={3} placeholder="O que a equipe precisa saber?" />
           <div className="form-linha">
-            <label htmlFor="aviso-tipo">Tipo</label>
-            <select id="aviso-tipo" value={tipo} onChange={(e) => setTipo(e.target.value)}>
+            <div className="tipo-grupo" role="radiogroup" aria-label="Tipo do aviso">
+              <span className="tipo-rotulo">Tipo</span>
               {Object.entries(TIPOS_AVISO).map(([k, t]) => (
-                <option key={k} value={k}>
+                <label key={k} className={`tipo-opcao ${tipo === k ? "sel" : ""}`} style={{ "--tipo": t.cor }}>
+                  <input type="radio" name="aviso-tipo" value={k} checked={tipo === k} onChange={() => setTipo(k)} />
+                  <i className="bolinha" aria-hidden="true" />
                   {t.nome}
-                </option>
+                </label>
               ))}
-            </select>
+            </div>
             <label htmlFor="aviso-ligar">Relacionar a</label>
             <select id="aviso-ligar" value={ligarA} onChange={(e) => setLigarA(e.target.value)}>
               <option value="">Nenhum aviso</option>
@@ -261,7 +305,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
           </h3>
           <div className="mural-grade grande">
             {fixados.map((a) => (
-              <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} {...acoes} />
+              <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} minimizado={minimizados.includes(a.id)} {...acoes} />
             ))}
           </div>
         </div>
@@ -276,7 +320,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
         <div className="mural-grade">
           {ativos.length === 0 && <p className="vazio">Nenhum aviso no mural. Use “Novo aviso” para começar.</p>}
           {outros.map((a) => (
-            <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} {...acoes} />
+            <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} minimizado={minimizados.includes(a.id)} {...acoes} />
           ))}
         </div>
       </div>
@@ -289,7 +333,7 @@ export default function Mural({ avisos, euId, setAvisos, horaAgora }) {
           {mostrarArquivados && (
             <div className="mural-grade">
               {arquivados.map((a) => (
-                <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} {...acoes} />
+                <CartaoAviso key={a.id} aviso={a} destaque={destaque === a.id} minimizado={minimizados.includes(a.id)} {...acoes} />
               ))}
             </div>
           )}
