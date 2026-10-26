@@ -143,7 +143,6 @@ button, select, h3 { font-family: "Nunito", system-ui, sans-serif; }
 .mural-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
 .mural-arquivados { margin-top: 18px; display: grid; gap: 12px; }
 .aviso-card { background: var(--cartao); border-radius: var(--r-c); padding: 14px; box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12); border-top: 5px solid var(--tipo); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.aviso-card.fixado { box-shadow: 0 3px 14px rgba(0, 58, 108, 0.28); }
 .aviso-card.arquivado { opacity: 0.65; }
 .aviso-card h3 { margin: 0; font-size: 17px; line-height: 1.25; }
 .aviso-card p { margin: 0; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
@@ -157,3 +156,34 @@ button, select, h3 { font-family: "Nunito", system-ui, sans-serif; }
 .aviso-vistos .ok { color: #1b7a43; font-weight: 700; }
 .aviso-acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
 .mural-arquivados .chip { justify-self: start; }
+
+/* Fixados: faixa própria, separada dos outros avisos */
+.mural-subtitulo { margin: 0 0 10px; font-family: "Nunito", sans-serif; font-size: 15px; font-weight: 800; color: var(--chumbo); display: flex; align-items: center; gap: 8px; }
+.mural-subtitulo .contagem { background: var(--suave); border-radius: 999px; font-size: 12px; padding: 2px 9px; }
+.mural-fixados { background: var(--faixa-fixo); border: 2px solid var(--azul); border-radius: var(--r-c); padding: 14px; margin-bottom: 22px; }
+.mural-fixados .mural-subtitulo { color: var(--azul); font-size: 17px; }
+@media (prefers-color-scheme: dark) { .mural-fixados .mural-subtitulo { color: #7fb4e8; } .mural-fixados { border-color: #7fb4e8; } }
+.mural-fixados .contagem { background: var(--azul); color: #fff; }
+.mural-grade.grande { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.mural-grade.grande .aviso-card h3 { font-size: 20px; }
+.mural-grade.grande .aviso-card p { font-size: 15px; }
+.aviso-card.fixado { box-shadow: 0 4px 16px rgba(0, 58, 108, 0.3); position: relative; }
+.mural-outros { margin-top: 4px; }
+.chip-fixar { border-color: var(--azul); color: var(--azul); }
+@media (prefers-color-scheme: dark) { .chip-fixar { border-color: #7fb4e8; color: #7fb4e8; } }
+:root { --faixa-fixo: #e8f1fa; }
+@media (prefers-color-scheme: dark) { :root { --faixa-fixo: #1b2f47; } }
+
+/* Ligações entre avisos */
+.aviso-rel { background: var(--suave); border-radius: var(--r-p); padding: 8px 10px; display: grid; gap: 6px; }
+.aviso-rel-titulo { font-size: 12px; font-weight: 800; font-family: "Nunito", sans-serif; color: var(--chumbo); }
+.aviso-rel-lista { display: flex; flex-wrap: wrap; gap: 6px; }
+.rel-chip { display: inline-flex; align-items: center; background: var(--cartao); border: 1px solid var(--tipo); border-radius: 999px; max-width: 100%; }
+.rel-chip button { border: 0; background: none; color: var(--texto); cursor: pointer; font-size: 12px; font-weight: 700; padding: 4px 10px; min-width: 0; overflow-wrap: anywhere; text-align: left; }
+.rel-chip .rel-ir { text-decoration: underline; text-decoration-color: var(--tipo); text-underline-offset: 3px; }
+.rel-chip .rel-x { padding: 4px 8px 4px 2px; font-size: 15px; color: var(--chumbo); }
+.rel-escolha { display: grid; gap: 4px; }
+.rel-escolha label { font-size: 12px; font-weight: 800; font-family: "Nunito", sans-serif; }
+.rel-escolha select { border: 1px solid var(--linha); background: var(--cartao); color: var(--texto); border-radius: var(--r-p); padding: 8px; font: inherit; font-size: 13px; width: 100%; }
+.aviso-card.destaque { outline: 3px solid var(--tipo); outline-offset: 2px; }
+.chip.ligado { background: var(--azul); border-color: var(--azul); color: #fff; }
