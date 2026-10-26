@@ -77,3 +77,19 @@ export const MENSAGENS_INICIAIS = [
   { id: 8, canal: "limpeza", autor: "recepcao", hora: "07:48", texto: "Anotei na lista de compras. Obrigada, Luciene!", lidoPor: ["recepcao", "luciene", "luiz"] },
   { id: 9, canal: "financeiro", autor: "isabela", hora: "09:00", texto: "Fechei a conferência das faturas de outubro. Só faltam duas para o Luiz aprovar.", lidoPor: ["isabela", "fernanda"] },
 ];
+
+// Mural: avisos que TODOS veem (dados inventados).
+export const TIPOS_AVISO = {
+  importante: { nome: "Importante", cor: "#ae0001" },
+  aviso: { nome: "Aviso", cor: "#003a6c" },
+  lembrete: { nome: "Lembrete", cor: "#b86e00" },
+  info: { nome: "Informativo", cor: "#4f5764" },
+};
+
+export const AVISOS_INICIAIS = [
+  { id: 101, autor: "luiz", hora: "26/10 08:00", tipo: "aviso", fixado: true, titulo: "Reunião geral da equipe", texto: "Sexta-feira, às 16h, na sala Milão. Recepção, limpeza, administrativo e gestão. Quem não puder, avise no canal Recepção e gestão.", vistoPor: ["luiz", "fernanda", "recepcao"], arquivado: false },
+  { id: 102, autor: "fernanda", hora: "26/10 08:45", tipo: "importante", fixado: false, titulo: "Eletricista amanhã cedo", texto: "Ele vem trocar as lâmpadas do corredor da Milão. Avisem os clientes que usam a sala para chegar com calma.", vistoPor: ["fernanda"], arquivado: false },
+  { id: 103, autor: "recepcao", hora: "26/10 08:20", tipo: "lembrete", fixado: false, titulo: "Encomenda da Studio Aurora", texto: "Está no armário da recepção. Quem atender o cliente entrega e anota no canal.", vistoPor: ["recepcao", "luiz"], arquivado: false },
+  { id: 104, autor: "luciene", hora: "26/10 07:30", tipo: "info", fixado: false, titulo: "Detergente da copa acabou", texto: "Já está na lista de compras. Até chegar, usem o da limpeza (armário de baixo).", vistoPor: ["luciene", "recepcao", "luiz", "isabela"], arquivado: false },
+  { id: 105, autor: "isabela", hora: "23/10 17:10", tipo: "info", fixado: false, titulo: "Conferência de faturas de outubro", texto: "Concluída. Esse aviso já foi resolvido e está arquivado.", vistoPor: ["isabela", "luiz", "fernanda"], arquivado: true },
+];

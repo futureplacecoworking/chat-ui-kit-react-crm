@@ -14,7 +14,8 @@ import {
   MessageInput,
   InputToolbox,
 } from "@kit";
-import { CANAIS, CARTOES, MENSAGENS_INICIAIS, PESSOAS, VER_COMO } from "./dados.js";
+import { AVISOS_INICIAIS, CANAIS, CARTOES, MENSAGENS_INICIAIS, PESSOAS, VER_COMO } from "./dados.js";
+import Mural from "./Mural.jsx";
 import { avatarDe } from "./avatar.js";
 
 const ICONE_CARTAO = { chamado: "🛠️", cliente: "👤", sala: "🚪" };
@@ -45,6 +46,8 @@ export default function App() {
   const [pedeConfirmacao, setPedeConfirmacao] = useState(false);
   const [anexo, setAnexo] = useState(null);
   const [menuAnexo, setMenuAnexo] = useState(false);
+  const [aba, setAba] = useState("mural");
+  const [avisos, setAvisos] = useState(AVISOS_INICIAIS);
 
   const eu = PESSOAS[euId];
   const meusCanais = CANAIS.filter((c) => c.participantes.includes(euId));
@@ -68,6 +71,7 @@ export default function App() {
   const doCanal = mensagens.filter((m) => m.canal === canal.id);
   const pendencias = doCanal.filter((m) => m.pedeConfirmacao && m.confirmadoPor.length === 0);
   const totalNaoLidas = meusCanais.reduce((s, c) => s + naoLidas(c.id), 0);
+  const avisosNovos = avisos.filter((a) => !a.arquivado && !a.vistoPor.includes(euId)).length;
 
   const canaisFiltrados = useMemo(
     () => meusCanais.filter((c) => c.nome.toLowerCase().includes(busca.trim().toLowerCase())),
@@ -113,8 +117,15 @@ export default function App() {
           <span className="marca-nome">CENTRAL</span>
           <span className="marca-sep">›</span>
           <span>Recados</span>
-          {totalNaoLidas > 0 && <span className="selo-topo">{totalNaoLidas}</span>}
         </div>
+        <nav className="abas" aria-label="Seções">
+          <button type="button" className={aba === "mural" ? "ativa" : ""} onClick={() => setAba("mural")}>
+            📌 Mural {avisosNovos > 0 && <span className="selo-topo">{avisosNovos}</span>}
+          </button>
+          <button type="button" className={aba === "conversas" ? "ativa" : ""} onClick={() => setAba("conversas")}>
+            💬 Conversas {totalNaoLidas > 0 && <span className="selo-topo">{totalNaoLidas}</span>}
+          </button>
+        </nav>
         <label className="ver-como">
           Ver como
           <select value={euId} onChange={(e) => setEuId(e.target.value)} aria-label="Ver como">
@@ -128,11 +139,13 @@ export default function App() {
       </header>
 
       <div className="aviso-proto">
-        Protótipo com dados inventados. Use “Ver como” para trocar de lado: o recado que a Recepção manda aparece para a gestão e
-        vice-versa. Nada é salvo.
+        Protótipo com dados inventados. O Mural é para todos verem; as Conversas são por canal. Use “Ver como” para trocar de lado. Nada é salvo.
       </div>
 
       <div className="palco">
+        {aba === "mural" ? (
+          <Mural avisos={avisos} setAvisos={setAvisos} euId={euId} horaAgora={horaAgora} />
+        ) : (
         <MainContainer>
           <Sidebar position="left" scrollable={false} className="lista-canais">
             <Search placeholder="Buscar conversa…" value={busca} onChange={setBusca} onClearClick={() => setBusca("")} />
@@ -180,7 +193,7 @@ export default function App() {
                     className={m.urgente ? "msg-urgente" : ""}
                   >
                     {!meu && <Avatar src={avatarDe(autor.nome, autor.cor)} name={autor.nome} />}
-                    <Message.Header sender={`${autor.nome} · ${autor.papel}`} />
+                    <Message.Header sender={autor.nome === autor.papel ? autor.nome : `${autor.nome} · ${autor.papel}`} />
                     <Message.CustomContent>
                       {m.urgente && <div className="etiqueta urgente">⚠ Urgente</div>}
                       {m.texto && <div className="texto">{m.texto}</div>}
@@ -291,6 +304,7 @@ export default function App() {
             </div>
           </Sidebar>
         </MainContainer>
+        )}
       </div>
     </div>
   );

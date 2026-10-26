@@ -118,3 +118,42 @@ button, select, h3 { font-family: "Nunito", system-ui, sans-serif; }
   .app.chat-aberto .cs-sidebar--left { display: none; }
   .aviso-proto { display: none; }
 }
+
+/* Abas do topo */
+.abas { display: flex; gap: 4px; background: var(--suave); border-radius: 999px; padding: 4px; }
+.abas button { border: 0; background: none; color: var(--chumbo); font-weight: 800; font-size: 14px; padding: 8px 16px; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.abas button.ativa { background: var(--cartao); color: var(--azul); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15); }
+@media (prefers-color-scheme: dark) { .abas button.ativa { color: #7fb4e8; } }
+
+/* Mural */
+.palco { overflow: auto; }
+.mural { padding: 18px; background: var(--fundo); min-height: 100%; }
+.mural-topo { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 14px; }
+.mural-topo h2 { margin: 0; font-family: "Nunito", sans-serif; font-size: 22px; color: var(--azul); }
+@media (prefers-color-scheme: dark) { .mural-topo h2 { color: #7fb4e8; } }
+.mural-topo p { margin: 4px 0 0; color: var(--chumbo); font-size: 14px; }
+.mural-form { background: var(--cartao); border-radius: var(--r-c); padding: 14px; display: grid; gap: 6px; margin-bottom: 16px; box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1); }
+.mural-form label { font-weight: 700; font-size: 13px; font-family: "Nunito", sans-serif; }
+.mural-form input[type="text"], .mural-form input:not([type]), .mural-form textarea, .mural-form select { border: 1px solid var(--linha); background: var(--cartao); color: var(--texto); border-radius: var(--r-p); padding: 9px 10px; font: inherit; font-size: 14px; width: 100%; }
+.form-linha { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.form-linha select { width: auto; }
+.form-linha .marcar { display: inline-flex; gap: 6px; align-items: center; }
+.form-linha button { margin-left: auto; }
+.btn-confirma:disabled { opacity: 0.5; cursor: not-allowed; }
+.mural-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.mural-arquivados { margin-top: 18px; display: grid; gap: 12px; }
+.aviso-card { background: var(--cartao); border-radius: var(--r-c); padding: 14px; box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12); border-top: 5px solid var(--tipo); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.aviso-card.fixado { box-shadow: 0 3px 14px rgba(0, 58, 108, 0.28); }
+.aviso-card.arquivado { opacity: 0.65; }
+.aviso-card h3 { margin: 0; font-size: 17px; line-height: 1.25; }
+.aviso-card p { margin: 0; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.aviso-topo { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.aviso-tipo { font-family: "Nunito", sans-serif; font-weight: 800; font-size: 12px; color: var(--tipo); text-transform: uppercase; letter-spacing: 0.06em; }
+.aviso-fixo { font-size: 12px; font-weight: 700; color: var(--chumbo); }
+.aviso-autor { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+.aviso-autor img { border-radius: 50%; }
+.aviso-autor small { display: block; color: var(--chumbo); font-size: 12px; }
+.aviso-vistos { font-size: 12px; color: var(--chumbo); }
+.aviso-vistos .ok { color: #1b7a43; font-weight: 700; }
+.aviso-acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+.mural-arquivados .chip { justify-self: start; }

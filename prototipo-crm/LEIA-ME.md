@@ -19,3 +19,10 @@ npm install
 npm run dev      # abre no navegador
 npm run build    # gera dist/index.html (um arquivo só)
 ```
+
+## Mural de recados (aba "Mural")
+Avisos que **todos veem**, em cartões coloridos por tipo (Importante, Aviso, Lembrete, Informativo).
+- Qualquer pessoa publica um aviso; só o Administrador **fixa** no topo.
+- Cada aviso mostra **quem já viu** (e quem falta); o botão "Li o aviso" marca a leitura.
+- **Arquivar** (quem escreveu ou o Administrador) em vez de excluir; "Mostrar arquivados" e "Restaurar" (Administrador).
+- O selo no topo conta os avisos que a pessoa ainda não leu.
