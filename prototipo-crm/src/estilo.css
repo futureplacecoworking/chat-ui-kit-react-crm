@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Raleway:wght@400;500;600&display=swap");
+
+:root {
+  --azul: #003a6c;
+  --vermelho: #ae0001;
+  --chumbo: #4f5764;
+  --fundo: #f3f5f8;
+  --cartao: #ffffff;
+  --texto: #1d2733;
+  --suave: #eef1f5;
+  --linha: #dfe4ea;
+  --r-p: 6px;
+  --r-c: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #141a22;
+    --cartao: #1d2530;
+    --texto: #e8edf3;
+    --suave: #2a3441;
+    --linha: #34404e;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body, #raiz { height: 100%; margin: 0; }
+body { background: var(--fundo); color: var(--texto); font-family: "Raleway", system-ui, sans-serif; }
+button, select, h3 { font-family: "Nunito", system-ui, sans-serif; }
+
+.app { height: 100%; display: flex; flex-direction: column; padding: 12px 16px 16px; gap: 10px; max-width: 1280px; margin: 0 auto; }
+.topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.marca { display: flex; align-items: center; gap: 8px; font-family: "Nunito", sans-serif; font-weight: 800; font-size: 20px; color: var(--azul); }
+@media (prefers-color-scheme: dark) { .marca { color: #7fb4e8; } }
+.marca-nome { letter-spacing: 0.12em; }
+.marca-sep { opacity: 0.5; }
+.selo-topo { background: var(--vermelho); color: #fff; border-radius: 999px; font-size: 12px; padding: 2px 8px; }
+.ver-como { font-size: 13px; display: flex; align-items: center; gap: 8px; color: var(--chumbo); font-weight: 600; }
+.ver-como select { border: 1px solid var(--linha); background: var(--cartao); color: var(--texto); border-radius: var(--r-p); padding: 8px 10px; font-size: 14px; }
+.aviso-proto { background: #e8f1fa; color: var(--azul); border-radius: var(--r-p); padding: 8px 12px; font-size: 13px; }
+@media (prefers-color-scheme: dark) { .aviso-proto { background: #1f3550; color: #cfe3f7; } }
+
+.palco { flex: 1; min-height: 0; border-radius: var(--r-c); overflow: hidden; box-shadow: 0 2px 14px rgba(0, 0, 0, 0.12); background: var(--cartao); }
+
+/* Cores da Central sobre o kit */
+.cs-main-container, .cs-sidebar, .cs-chat-container, .cs-message-list, .cs-conversation-header, .cs-message-input, .cs-message-input__content-editor-wrapper, .cs-search, .cs-message-input__content-editor, .cs-message-input__content-editor-container {
+  background: var(--cartao); color: var(--texto);
+}
+.cs-main-container { border: 0; font-family: "Raleway", sans-serif; }
+.cs-main-container .cs-sidebar.cs-sidebar--left { max-width: 320px; min-width: 240px; flex-basis: 30%; }
+.cs-main-container .cs-sidebar.cs-sidebar--right { max-width: 280px; min-width: 220px; flex-basis: 26%; }
+.cs-search { background: var(--suave); border-radius: var(--r-p); }
+.cs-search__input { background: var(--suave); color: var(--texto); }
+.cs-conversation { color: var(--texto); }
+.cs-conversation:hover { background: var(--suave); }
+.cs-conversation--active, .cs-conversation--active:hover { background: #dbe9f6; }
+@media (prefers-color-scheme: dark) { .cs-conversation--active, .cs-conversation--active:hover { background: #26405c; } }
+.cs-conversation__name, .cs-conversation__info-content { color: var(--texto); }
+.cs-conversation__unread { background: var(--vermelho); color: #fff; }
+.cs-conversation-header__user-name { font-family: "Nunito", sans-serif; font-weight: 800; color: var(--azul); }
+@media (prefers-color-scheme: dark) { .cs-conversation-header__user-name { color: #7fb4e8; } }
+.cs-message-list { background: var(--fundo); }
+.cs-message-separator { color: var(--chumbo); }
+.cs-message--incoming .cs-message__content { background: var(--cartao); color: var(--texto); border: 1px solid var(--linha); }
+.cs-message--outgoing .cs-message__content { background: var(--azul); color: #fff; }
+.cs-message__header { font-family: "Nunito", sans-serif; font-weight: 700; font-size: 12px; color: var(--chumbo); }
+.cs-message__content { border-radius: var(--r-c); line-height: 1.45; }
+.cs-message-input__content-editor { color: var(--texto); }
+.cs-button--send { color: var(--azul); }
+.cs-chat-container .cs-message-input { border-top: 1px solid var(--linha); }
+
+.texto { white-space: pre-wrap; }
+.etiqueta { display: inline-block; font-family: "Nunito", sans-serif; font-weight: 800; font-size: 12px; border-radius: 999px; padding: 2px 8px; margin-bottom: 6px; }
+.etiqueta.urgente { background: #fde6e6; color: var(--vermelho); }
+.msg-urgente .cs-message__content { box-shadow: inset 4px 0 0 var(--vermelho); }
+
+.cartao { display: flex; gap: 10px; align-items: center; margin-top: 8px; padding: 8px 10px; border-radius: var(--r-p); background: rgba(127, 127, 127, 0.14); }
+.cartao strong { display: block; font-family: "Nunito", sans-serif; font-size: 13px; }
+.cartao small { display: block; opacity: 0.8; font-size: 12px; }
+.cartao-icone { font-size: 20px; }
+
+.confirma { margin-top: 8px; font-size: 12px; }
+.confirma .ok { color: #1b7a43; font-weight: 700; }
+.cs-message--outgoing .confirma .ok { color: #a8f0c4; }
+.confirma .espera { opacity: 0.85; }
+.btn-confirma { background: var(--azul); color: #fff; border: 0; border-radius: var(--r-p); padding: 8px 12px; font-weight: 700; cursor: pointer; font-size: 13px; }
+.btn-confirma:hover { filter: brightness(1.2); }
+
+/* Opções de envio (usa a área InputToolbox do kit) */
+.cs-input-toolbox { background: var(--cartao); border-top: 0; padding: 6px 10px 10px; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; position: relative; }
+.chip { border: 1px solid var(--linha); background: var(--cartao); color: var(--chumbo); border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 13px; cursor: pointer; }
+.chip.ligado { background: var(--azul); border-color: var(--azul); color: #fff; }
+.chip.ligado.vermelho { background: var(--vermelho); border-color: var(--vermelho); }
+.menu-anexo { position: relative; }
+.menu { position: absolute; bottom: 38px; left: 0; z-index: 10; width: 280px; max-height: 300px; overflow: auto; background: var(--cartao); border: 1px solid var(--linha); border-radius: var(--r-c); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); padding: 6px; }
+.menu-titulo { font-size: 12px; font-weight: 800; color: var(--chumbo); padding: 6px 8px 2px; font-family: "Nunito", sans-serif; }
+.menu button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 8px; border-radius: var(--r-p); color: var(--texto); cursor: pointer; font-size: 13px; }
+.menu button:hover { background: var(--suave); }
+.anexo-escolhido { background: var(--suave); border-radius: 999px; padding: 4px 6px 4px 12px; font-size: 13px; display: inline-flex; gap: 6px; align-items: center; }
+.anexo-escolhido button { border: 0; background: none; cursor: pointer; font-size: 16px; color: var(--chumbo); }
+
+/* Painel da direita */
+.painel { padding: 14px; background: var(--cartao); height: 100%; }
+.painel h3 { margin: 4px 0 8px; font-size: 14px; color: var(--azul); }
+@media (prefers-color-scheme: dark) { .painel h3 { color: #7fb4e8; } }
+.vazio { font-size: 13px; color: var(--chumbo); margin: 0 0 16px; }
+.pendencia { background: #fff4e0; border-left: 4px solid #e08a00; border-radius: var(--r-p); padding: 8px 10px; margin-bottom: 8px; font-size: 13px; color: #4a3200; }
+.pendencia small { display: block; font-weight: 700; opacity: 0.75; }
+.pessoas { list-style: none; margin: 0; padding: 0; }
+.pessoas li { display: flex; gap: 10px; align-items: center; padding: 6px 0; font-size: 14px; }
+.pessoas small { display: block; color: var(--chumbo); font-size: 12px; }
+
+/* Celular: ou a lista, ou a conversa */
+@media (max-width: 860px) {
+  .cs-main-container .cs-sidebar.cs-sidebar--right { display: none; }
+  .cs-main-container .cs-sidebar.cs-sidebar--left { max-width: none; flex-basis: 100%; }
+  .app:not(.chat-aberto) .cs-chat-container { display: none; }
+  .app.chat-aberto .cs-sidebar--left { display: none; }
+  .aviso-proto { display: none; }
+}
